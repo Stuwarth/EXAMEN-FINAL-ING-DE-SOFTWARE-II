@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -6,7 +6,6 @@ function App() {
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
 
-  // Cambiar URL si es necesario
   const API_URL = 'http://localhost:5000/api/tasks';
 
   useEffect(() => {
@@ -27,7 +26,7 @@ function App() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     if (!title.trim()) {
-      setError('El título de la tarea es obligatorio (Validación vacíos)');
+      setError('El título de la tarea es obligatorio.');
       return;
     }
     
@@ -62,65 +61,122 @@ function App() {
     }
   };
 
+  const completedCount = tasks.filter(t => t.completed).length;
+
   return (
-    <div className="app-container">
-      <div className="header">
-        <h1>Gestión de Tareas</h1>
-        <p>Actividad 4 - Examen Ing. de Software II</p>
-      </div>
-
-      <form onSubmit={handleCreateTask} className="task-form">
-        <div className="input-group">
-          <input
-            type="text"
-            className="task-input"
-            placeholder="¿Qué necesitas hacer? (Título)"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className="input-group">
-          <textarea
-            className="task-textarea"
-            placeholder="Detalles adicionales (opcional)..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        {error && <div style={{ color: 'var(--danger-color)', fontSize: '0.9rem' }}>{error}</div>}
-        <button type="submit" className="btn-submit">
-          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+    <div className="dashboard">
+      <aside className="sidebar">
+        <div className="brand">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
           </svg>
-          Registrar Tarea
-        </button>
-      </form>
+          Taskify
+        </div>
+        <ul className="nav-menu">
+          <li className="nav-item active">
+            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Mi Tablero
+          </li>
+          <li className="nav-item">
+            <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4H5" />
+            </svg>
+            Completadas ({completedCount})
+          </li>
+        </ul>
+      </aside>
 
-      <div className="task-list">
-        {tasks.length === 0 ? (
-          <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No hay tareas registradas aún. ¡Añade una!</p>
-        ) : (
-          tasks.map((task) => (
-            <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
-              <div className="task-content">
-                <div className="task-title">{task.title}</div>
-                {task.description && <div className="task-desc">{task.description}</div>}
-              </div>
-              <button 
-                onClick={() => handleComplete(task.id)} 
-                className={`btn-complete ${task.completed ? 'is-done' : ''}`}
-                title={task.completed ? "Completado" : "Marcar como completada"}
-              >
-                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </button>
+      <main className="main-content">
+        <div className="header-top">
+          <h1 className="header-title">Planificador de Tareas</h1>
+          <p className="header-subtitle">Actividad 4 - Gestiona las actividades de tu equipo</p>
+        </div>
+
+        <div className="grid-container">
+          <div className="form-column">
+            <div className="form-card">
+              <h2 className="form-title">Registrar Nueva Tarea</h2>
+              <form onSubmit={handleCreateTask}>
+                <div className="input-wrapper">
+                  <label className="input-label">Título de la Tarea</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Ej: Estudiar para el examen..."
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+                
+                <div className="input-wrapper">
+                  <label className="input-label">Descripción Detallada (Opcional)</label>
+                  <textarea
+                    className="form-textarea"
+                    placeholder="Escribe los detalles aquí..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+
+                {error && (
+                  <div className="error-badge">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {error}
+                  </div>
+                )}
+
+                <button type="submit" className="btn-primary">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Crear Tarea
+                </button>
+              </form>
             </div>
-          ))
-        )}
-      </div>
+          </div>
+
+          <div className="list-column">
+            <div className="task-header">
+              <h2 className="form-title" style={{marginBottom: 0}}>Mis Tareas</h2>
+              <span className="task-stats">{tasks.length} en total</span>
+            </div>
+            
+            <div className="task-items">
+              {tasks.length === 0 ? (
+                <div style={{textAlign: 'center', padding: '3rem', color: 'var(--text-gray)', backgroundColor: 'var(--bg-card)', borderRadius: '16px', border: '1px dashed var(--border-light)'}}>
+                   Aún no tienes tareas registradas. Empieza creando una a la izquierda.
+                </div>
+              ) : (
+                tasks.map((task) => (
+                  <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
+                    <button 
+                      onClick={() => handleComplete(task.id)} 
+                      className="task-status-btn"
+                      title={task.completed ? "Completado" : "Marcar como completada"}
+                    >
+                      {task.completed && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      )}
+                    </button>
+                    <div className="task-info">
+                      <div className="task-name">{task.title}</div>
+                      {task.description && <div className="task-desc">{task.description}</div>}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
