@@ -48,8 +48,7 @@ exports.updateTask = async (req, res) => {
     if (!title || title.trim() === '') {
       return res.status(400).json({ error: 'El título es obligatorio' });
     }
-    const success = await TaskModel.update(req.params.id, title.trim(), description?.trim() || '');
-    if (!success) return res.status(404).json({ error: 'Tarea no encontrada' });
+    await TaskModel.update(req.params.id, title.trim(), description?.trim() || '');
     res.json({ message: 'Tarea actualizada' });
   } catch (error) {
     res.status(500).json({ error: 'Error al actualizar tarea' });
